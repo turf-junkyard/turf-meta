@@ -1,0 +1,16 @@
+{
+  "name": "turf-meta",
+  "version": "1.0.0",
+  "description": "meta and functional programming helpers for turf modules",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test.js"
+  },
+  "keywords": [
+    "functional",
+    "programming",
+    "turfjs"
+  ],
+  "author": "Tom MacWright",
+  "license": "ISC"
+}
