@@ -1,4 +1,4 @@
-module.exports.coordEach = coordEach;
+module.exports = each;
 
 /**
  * Lazily iterate over coordinates in any GeoJSON object, similar to
@@ -7,7 +7,7 @@ module.exports.coordEach = coordEach;
  * @param {Object} layer any GeoJSON object
  * @param {Function} callback a method that takes (value)
  */
-function coordEach(layer, callback) {
+function each(layer, callback) {
   var features = [], i, j, k, g;
 
   switch (layer.type) {
