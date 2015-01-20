@@ -1,5 +1,7 @@
 # turf-meta
 
+[![build status](https://secure.travis-ci.org/Turfjs/turf-meta.png)](http://travis-ci.org/Turfjs/turf-meta)
+
 Functional helpers for Turf modules.
 
 **Why?** Because many turf modules have a similar pattern of running some operation
