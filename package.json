@@ -4,7 +4,8 @@
   "description": "meta and functional programming helpers for turf modules",
   "main": "index.js",
   "scripts": {
-    "test": "tape test.js"
+    "test": "tape test.js",
+    "doc": "dox < index.js | doxme"
   },
   "keywords": [
     "functional",
@@ -14,6 +15,8 @@
   "author": "Tom MacWright",
   "license": "ISC",
   "devDependencies": {
+    "dox": "^0.6.1",
+    "doxme": "^1.0.0",
     "tape": "^3.4.0"
   }
 }
