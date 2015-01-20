@@ -1,6 +1,6 @@
-var each = require('./each');
+var coordEach = require('./coord_each');
 
-module.exports = reduce;
+module.exports = coordReduce;
 
 /**
  * Lazily reduce coordinates in any GeoJSON object into a single value,
@@ -12,8 +12,8 @@ module.exports = reduce;
  * a new memo
  * @param {*} memo the starting value of memo: can be any type.
  */
-function reduce(layer, callback, memo) {
-  each(layer, function(coord) {
+function coordReduce(layer, callback, memo) {
+  coordEach(layer, function(coord) {
     memo = callback(memo, coord);
   });
   return memo;

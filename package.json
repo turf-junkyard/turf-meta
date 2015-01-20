@@ -12,5 +12,8 @@
     "turfjs"
   ],
   "author": "Tom MacWright",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "tape": "^3.4.0"
+  }
 }
