@@ -31,7 +31,7 @@ function coordEach(layer, callback) {
         [features[i].geometry];
     for (g = 0; g < geometries.length; g++) {
       var coords = geometries[g].coordinates;
-      switch (features[i].geometry.type) {
+      switch (geometries[g].type) {
         case 'Point':
           callback(coords);
           break;
