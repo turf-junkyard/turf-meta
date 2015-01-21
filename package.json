@@ -18,5 +18,9 @@
     "dox": "^0.6.1",
     "doxme": "^1.0.0",
     "tape": "^3.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Turfjs/turf-meta.git"
   }
 }
