@@ -1,36 +1,38 @@
+'use strict';
+
 var test = require('tape'),
     meta = require('./');
 
-var pointGeometry = {
+var pointGeometry = Object.freeze({
     type: 'Point',
     coordinates: [0, 0]
-};
+});
 
-var lineStringGeometry = {
+var lineStringGeometry = Object.freeze({
     type: 'LineString',
     coordinates: [[0, 0], [1, 1]]
-};
+});
 
-var polygonGeometry = {
+var polygonGeometry = Object.freeze({
     type: 'Polygon',
     coordinates: [[[0, 0], [1, 1], [0, 1], [0, 0]]]
-};
+});
 
-var multiPolygonGeometry = {
+var multiPolygonGeometry = Object.freeze({
     type: 'MultiPolygon',
     coordinates: [[[[0, 0], [1, 1], [0, 1], [0, 0]]]]
-};
+});
 
-var geometryCollection = {
+var geometryCollection = Object.freeze({
     type: 'GeometryCollection',
     geometries: [pointGeometry, lineStringGeometry]
-};
+});
 
-var pointFeature = {
+var pointFeature = Object.freeze({
     type: 'Feature',
     properties: { a: 1},
     geometry: pointGeometry
-};
+});
 
 function collection(feature) {
     var featureCollection = {
@@ -123,5 +125,36 @@ test('unknown', function(t) {
     t.throws(function() {
         meta.coordEach({});
     });
+    t.end();
+});
+
+test('map#Point', function(t) {
+    t.deepEqual(meta.coordMap(pointGeometry, function(coord) {
+        return [coord[0] + 10, coord[1] + 20];
+    }), {
+        type: 'Point', coordinates: [10, 20]
+    }, 'adds point');
+    t.end();
+});
+
+test('map#Feature#Point', function(t) {
+    t.deepEqual(meta.coordMap(pointFeature, function(coord) {
+        return [coord[0] + 10, coord[1] + 20];
+    }), {
+        type: 'Feature',
+        properties: { a: 1 },
+        geometry: {
+            type: 'Point', coordinates: [10, 20]
+        }
+    }, 'adds point');
+    t.end();
+});
+
+test('map#LineString', function(t) {
+    t.deepEqual(meta.coordMap(lineStringGeometry, function(coord) {
+        return [coord[0] * 10, coord[1] * 10];
+    }), {
+        type: 'LineString', coordinates: [[0, 0], [10, 10]]
+    }, 'multiplies linestring');
     t.end();
 });
