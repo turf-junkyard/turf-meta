@@ -11,48 +11,53 @@
  * });
  */
 function coordEach(layer, callback) {
-  var features = [], i, j, k, g;
+  var i, j, k, g, geometry, stopG, coords,
+    geometryMaybeCollection,
+    isGeometryCollection,
+    isFeatureCollection = layer.type === 'FeatureCollection',
+    isFeature = layer.type === 'Feature',
+    stop = isFeatureCollection ? layer.features.length : 1;
 
-  switch (layer.type) {
-      case 'FeatureCollection':
-        features = layer.features;
-        break;
-      case 'Feature':
-        features = [layer];
-        break;
-      default:
-        features = [{ geometry: layer }];
-        break;
-  }
+  // This logic may look a little weird. The reason why it is that way
+  // is because it's trying to be fast. GeoJSON supports multiple kinds
+  // of objects at its root: FeatureCollection, Features, Geometries.
+  // This function has the responsibility of handling all of them, and that
+  // means that some of the `for` loops you see below actually just don't apply
+  // to certain inputs. For instance, if you give this just a
+  // Point geometry, then both loops are short-circuited and all we do
+  // is gradually rename the input until it's called 'geometry'.
+  //
+  // This also aims to allocate as few resources as possible: just a
+  // few numbers and booleans, rather than any temporary arrays as would
+  // be required with the normalization approach.
+  for (i = 0; i < stop; i++) {
 
-  for (i = 0; i < features.length; i++) {
-    var geometries = (features[i].geometry.type === 'GeometryCollection') ?
-        features[i].geometry.geometries :
-        [features[i].geometry];
-    for (g = 0; g < geometries.length; g++) {
-      var coords = geometries[g].coordinates;
-      switch (geometries[g].type) {
-        case 'Point':
-          callback(coords);
-          break;
-        case 'LineString':
-        case 'MultiPoint':
-          for (j = 0; j < coords.length; j++) callback(coords[j]);
-          break;
-        case 'Polygon':
-        case 'MultiLineString':
-          for (j = 0; j < coords.length; j++)
-            for (k = 0; k < coords[j].length; k++)
-              callback(coords[j][k]);
-          break;
-        case 'MultiPolygon':
-          for (j = 0; j < coords.length; j++)
-            for (k = 0; k < coords[j].length; k++)
-              for (l = 0; l < coords[j][k].length; l++)
-                callback(coords[j][k][l]);
-          break;
-        default:
-          throw new Error('Unknown Geometry Type');
+    geometryMaybeCollection = (isFeatureCollection ? layer.features[i].geometry :
+        (isFeature ? layer.geometry : layer));
+    isGeometryCollection = geometryMaybeCollection.type === 'GeometryCollection';
+    stopG = isGeometryCollection ? geometryMaybeCollection.geometries.length : 1;
+
+    for (g = 0; g < stopG; g++) {
+
+      geometry = isGeometryCollection ?
+          geometryMaybeCollection.geometries[g] : geometryMaybeCollection;
+      coords = geometry.coordinates;
+
+      if (geometry.type === 'Point') {
+        callback(coords);
+      } else if (geometry.type === 'LineString' || geometry.type === 'MultiPoint') {
+        for (j = 0; j < coords.length; j++) callback(coords[j]);
+      } else if (geometry.type === 'Polygon' || geometry.type === 'MultiLineString') {
+        for (j = 0; j < coords.length; j++)
+          for (k = 0; k < coords[j].length; k++)
+            callback(coords[j][k]);
+      } else if (geometry.type === 'MultiPolygon') {
+        for (j = 0; j < coords.length; j++)
+          for (k = 0; k < coords[j].length; k++)
+            for (l = 0; l < coords[j][k].length; l++)
+              callback(coords[j][k][l]);
+      } else {
+        throw new Error('Unknown Geometry Type');
       }
     }
   }
