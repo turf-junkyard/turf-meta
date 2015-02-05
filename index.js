@@ -4,7 +4,7 @@
  *
  * @param {Object} layer any GeoJSON object
  * @param {Function} callback a method that takes (value)
- * @param {boolean} excludeWrapCoord whether or not to include
+ * @param {boolean=} excludeWrapCoord whether or not to include
  * the final coordinate of LinearRings that wraps the ring in its iteration.
  * @example
  * var point = { type: 'Point', coordinates: [0, 0] };
@@ -79,7 +79,7 @@ module.exports.coordEach = coordEach;
  * @param {Object} layer any GeoJSON object
  * @param {Function} callback a method that takes (memo, value) and returns
  * a new memo
- * @param {boolean} excludeWrapCoord whether or not to include
+ * @param {boolean=} excludeWrapCoord whether or not to include
  * the final coordinate of LinearRings that wraps the ring in its iteration.
  * @param {*} memo the starting value of memo: can be any type.
  */
