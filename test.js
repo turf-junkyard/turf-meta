@@ -1,4 +1,5 @@
 var test = require('tape'),
+    fs = require('fs'),
     meta = require('./');
 
 var pointGeometry = {
@@ -96,6 +97,19 @@ featureAndCollection(polygonGeometry).forEach(function(input) {
         t.end();
     });
 });
+
+featureAndCollection(polygonGeometry).forEach(function(input) {
+    test('coordEach#Polygon excludeWrapCoord', function(t) {
+        var output = [];
+        meta.coordEach(input, function(coord) {
+            output.push(coord);
+        }, true);
+        t.deepEqual(output, [[0, 0], [1, 1], [0, 1]]);
+        t.end();
+    });
+});
+
+
 
 featureAndCollection(multiPolygonGeometry).forEach(function(input) {
     test('coordEach#MultiPolygon', function(t) {

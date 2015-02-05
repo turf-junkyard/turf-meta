@@ -4,15 +4,18 @@
  *
  * @param {Object} layer any GeoJSON object
  * @param {Function} callback a method that takes (value)
+ * @param {boolean} excludeWrapCoord whether or not to include
+ * the final coordinate of LinearRings that wraps the ring in its iteration.
  * @example
  * var point = { type: 'Point', coordinates: [0, 0] };
  * coordEach(point, function(coords) {
  *   // coords is equal to [0, 0]
  * });
  */
-function coordEach(layer, callback) {
+function coordEach(layer, callback, excludeWrapCoord) {
   var i, j, k, g, geometry, stopG, coords,
     geometryMaybeCollection,
+    wrapShrink = 0,
     isGeometryCollection,
     isFeatureCollection = layer.type === 'FeatureCollection',
     isFeature = layer.type === 'Feature',
@@ -43,18 +46,22 @@ function coordEach(layer, callback) {
           geometryMaybeCollection.geometries[g] : geometryMaybeCollection;
       coords = geometry.coordinates;
 
+      wrapShrink = (excludeWrapCoord &&
+        (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon')) ?
+        1 : 0;
+
       if (geometry.type === 'Point') {
         callback(coords);
       } else if (geometry.type === 'LineString' || geometry.type === 'MultiPoint') {
         for (j = 0; j < coords.length; j++) callback(coords[j]);
       } else if (geometry.type === 'Polygon' || geometry.type === 'MultiLineString') {
         for (j = 0; j < coords.length; j++)
-          for (k = 0; k < coords[j].length; k++)
+          for (k = 0; k < coords[j].length - wrapShrink; k++)
             callback(coords[j][k]);
       } else if (geometry.type === 'MultiPolygon') {
         for (j = 0; j < coords.length; j++)
           for (k = 0; k < coords[j].length; k++)
-            for (l = 0; l < coords[j][k].length; l++)
+            for (l = 0; l < coords[j][k].length - wrapShrink; l++)
               callback(coords[j][k][l]);
       } else {
         throw new Error('Unknown Geometry Type');
@@ -72,12 +79,14 @@ module.exports.coordEach = coordEach;
  * @param {Object} layer any GeoJSON object
  * @param {Function} callback a method that takes (memo, value) and returns
  * a new memo
+ * @param {boolean} excludeWrapCoord whether or not to include
+ * the final coordinate of LinearRings that wraps the ring in its iteration.
  * @param {*} memo the starting value of memo: can be any type.
  */
-function coordReduce(layer, callback, memo) {
+function coordReduce(layer, callback, memo, excludeWrapCoord) {
   coordEach(layer, function(coord) {
     memo = callback(memo, coord);
-  });
+  }, excludeWrapCoord);
   return memo;
 }
 module.exports.coordReduce = coordReduce;
