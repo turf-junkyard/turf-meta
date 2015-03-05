@@ -13,7 +13,7 @@
  * });
  */
 function coordEach(layer, callback, excludeWrapCoord) {
-  var i, j, k, g, geometry, stopG, coords,
+  var i, j, k, g, l, geometry, stopG, coords,
     geometryMaybeCollection,
     wrapShrink = 0,
     isGeometryCollection,
