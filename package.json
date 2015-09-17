@@ -17,7 +17,8 @@
   "devDependencies": {
     "dox": "^0.6.1",
     "doxme": "^1.0.0",
-    "tape": "^3.4.0"
+    "tape": "^3.4.0",
+    "turf-random": "^1.0.2"
   },
   "repository": {
     "type": "git",
