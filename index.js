@@ -13,6 +13,8 @@
  * });
  */
 function coordEach(layer, callback, excludeWrapCoord) {
+  if (!layer) return;
+
   var i, j, k, g, l, geometry, stopG, coords,
     geometryMaybeCollection,
     wrapShrink = 0,
@@ -37,6 +39,7 @@ function coordEach(layer, callback, excludeWrapCoord) {
 
     geometryMaybeCollection = (isFeatureCollection ? layer.features[i].geometry :
         (isFeature ? layer.geometry : layer));
+    if (!geometryMaybeCollection) continue;
     isGeometryCollection = geometryMaybeCollection.type === 'GeometryCollection';
     stopG = isGeometryCollection ? geometryMaybeCollection.geometries.length : 1;
 
@@ -44,6 +47,7 @@ function coordEach(layer, callback, excludeWrapCoord) {
 
       geometry = isGeometryCollection ?
           geometryMaybeCollection.geometries[g] : geometryMaybeCollection;
+      if (!geometry) continue;
       coords = geometry.coordinates;
 
       wrapShrink = (excludeWrapCoord &&
