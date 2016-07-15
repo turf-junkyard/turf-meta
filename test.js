@@ -2,6 +2,8 @@ var test = require('tape'),
     fs = require('fs'),
     meta = require('./');
 
+var nullGeometry = null;
+
 var pointGeometry = {
     type: 'Point',
     coordinates: [0, 0]
@@ -129,6 +131,17 @@ featureAndCollection(geometryCollection).forEach(function(input) {
             output.push(coord);
         });
         t.deepEqual(output, [[0, 0], [0, 0], [1, 1]]);
+        t.end();
+    });
+});
+
+featureAndCollection(nullGeometry).forEach(function(input) {
+    test('coordEach#null', function(t) {
+        var output = [];
+        meta.coordEach(input, function(coord) {
+            output.push(coord);
+        });
+        t.deepEqual(output, []);
         t.end();
     });
 });
